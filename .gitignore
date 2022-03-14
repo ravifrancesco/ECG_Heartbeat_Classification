@@ -46,6 +46,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+.DS_Store
 *.cover
 *.py,cover
 .hypothesis/
