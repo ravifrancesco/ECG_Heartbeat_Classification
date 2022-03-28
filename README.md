@@ -1,4 +1,4 @@
-#ECG Hearthbeat Classification
+# ECG Hearthbeat Classification
 
 ## Database
 
