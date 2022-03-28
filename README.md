@@ -18,4 +18,7 @@ $ pip install PyWavelets
 ### File paths
 In the notebooks some filepaths may be found (for the .h5 files for the models and the .csv files for the databases). They have to be changed to match the file paths of the environment where the models are run.
 
+## Contributors
 
+* [@Matteo-Omenetti](https://github.com/Matteo-Omenetti)
+* [@ravifrancesco](https://github.com/ravifrancesco)
