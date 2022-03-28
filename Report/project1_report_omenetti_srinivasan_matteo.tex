@@ -10,7 +10,7 @@
 %	INSERT HERE YOUR NAME
 %----------------------------------------------------------------------------------------
 
-\student{Omenetti Matteo, Ravi Srinivasan}
+\student{Omenetti Matteo, Srinivasan Ravi}
 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
@@ -19,7 +19,8 @@
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Use 8-bit encoding
 \usepackage[sc]{mathpazo}
-\usepackage{caption, subcaption}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{inconsolata}
 
@@ -96,7 +97,7 @@
 
 
 \section{Introduction}
-This report is part of the first project for the course "Machine Learning for Health Care" hosted at ETH Zürich. The scope of this project was to build different models for ECG classification for two different datasets PTB and MIT\_BIH.  All of the models described in this report can be found in  "src/" and they have been trained (in a reasonable amount of time) using the GPUs/TPUs offered by Google COLAB-Pro. All of the images that summarize the achitecture of the different models have been omitted due to the length constraints of the report, but they can be found in "./models\_architecture\_images"
+This report is part of the first project for the course "Machine Learning for Health Care" hosted at ETH Zürich. The scope of this project was to build different models for ECG classification for two different datasets PTB and MIT\_BIH.  All of the models described in this report can be found in  "src/" and they have been trained (in a reasonable amount of time) using the GPUs/TPUs offered by Google COLAB-Pro. All of the images that summarize the achitecture of the different models have been omitted due to the length constraints of the report, but can be found in the respective notebooks together the graphs for the training loss and accuracy and the confusion matrices for multiclass classification.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VANILLA CNN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,125 +106,107 @@ For the vanilla CNN, a smaller model compared to the one provided as a baseline 
 
 %%%%%%% MIT %%%%%%%
 \subsection{MIT\_BIH}
-The code for this model can be found at "/src/MIT/CNN\_mit.ipynb".
-The model on the Mit\_Bih dataset achieves a test accuracy score of 0.981, taking around 6 minutes to train. This model was trained for 33 epochs with the option to reduce the learning rate on plateau, before early stopping kicked in.
-As image \ref{fig:cnn_mit_three} and the reported accuracy show the performance of this shallower model are very close to the baseline model (accuracy 0.985)  that instead takes more than 7 minutes to train on the same GPU.
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.3\textwidth]{../models_performance_graphs/mit/CNN_mit_train_validation.png}\hfill
-\includegraphics[width=.3\textwidth]{../models_performance_graphs/mit/cnn_mit_train_val_acc.png}\hfill
-\includegraphics[width=.3\textwidth]{../models_performance_graphs/mit/cnn_mit_confusion.png}
-\caption{(left) train and validation loss of the vanilla CNN for the Mit\_bih dataset. \\ (center) train and validation accuracy of the vanilla CNN for the Mit\_bih dataset. \\(right) confusion matrix of the vanilla CNN for the Mit\_bih dataset}
-\label{fig:cnn_mit_three}
-\end{figure}
+The model on the Mit\_Bih dataset achieves a test accuracy score of 0.982, taking around 6 minutes to train. This model was trained for 25 epochs with the option to reduce the learning rate on plateau, early stopping and validaiton split 0.1.
+The reported accuracy show the performance of this shallower model are very close to the baseline model (accuracy 0.985)  that instead takes more than 7 minutes to train on the same GPU.
 
 %%%%%%% PTB %%%%%%%
 \subsection{PTB}
-The code for this model can be found at "/src/PTB/CNN\_ptb.ipynb".
-The model on the PTB dataset achieves a test accuracy score of 0.982, taking around 1 minute to train. 
-As image \ref{fig:cnn_ptb_three} and the reported accuracy show, the performance of this shallower model is very close to the baseline model (accuracy 0.991).
-The AURPRC and AUROC curves can be found in image \ref{fig:cnn_ptb_two}
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/cnn_ptb_accuracy.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/cnn_ptb_loss.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/cnn_ptb_confusion.png}\hfill
-\caption{(left) train and validation loss of the vanilla CNN for the PTB dataset. \\ (center) train and validation accuracy of the vanilla CNN for the PTB dataset. \\(right) confusion matrix of the vanilla CNN for the PTB dataset}
-\label{fig:cnn_ptb_three}
-\end{figure}
+The model on the PTB dataset achieves a test accuracy score of 0.975, taking around 1 minute to train. This model was trained for 33 epochs with the option to reduce the learning rate on plateau, early stopping and validation split 0.1.
+The reported accuracy show, the performance of this shallower model is very close to the baseline model (accuracy 0.991). The model achieved a AUROC score of 0.974 and a AUPRC score of 0.983.
 
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/cnn_ptb_auprc.png}\hfill
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/cnn_ptb_auroc.png}\hfill
-\caption{(left) AURPC curve of the vanilla CNN for the PTB dataset. \\ (right) AUROC curve of the vanilla CNN for the PTB dataset}
-\label{fig:cnn_ptb_two}
-\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VANILLA RNN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Recurrent Neural Network (RNN)}
+This model consists of three sequential SimpleRNN blocks (respectively with dimension 128, 256 and 100), followed by a dense layer to perform the classification. The model is trained by unrolling the RNN blocks to speed up the training with GPUs.
+%%%%%%% MIT %%%%%%%
+\subsection{MIT\_BIH}
+The training completed in 40 epochs (40s/epochs) with early stopping and validation split set at 0.2.
+This model on the Mit\_Bih dataset achives an accuracy of 0.888. 
 
+%%%%%%% PTB %%%%%%%
+\subsection{PTB}
+ The training completed in 89 epochs (5s/epochs) with early stopping and validation split set at 0.2.
+This model on the Mit\_Bih dataset achives an accuracy of 0.795. The model achieved a AUROC score of 0.857 and a AUPRC score of 0.940.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DBLSTM-WS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{DBLSTM-WS}
+This network consists of 2 Bidirectional LSTM blocks (dimension 128 and 64) both with return\_sequences=True and dropout rate at 0.01. A dense layer follows with dimension 128 and dropout rate 0.3 and ReLu as actiavtion function. A final dense layer follows for classification. The network takes as input a matrix where the first layer represents the original signal, while the other rows each represent the DWT (discrete wavelet decomposition) of the previous row. To achieve this we use the pywavelet library and the Daubechies db6 wavelet member (the rows are padded to 0 to obtain same-length signals). In both cases we found that using 3 levels of discrete wavelet transforms.
+%%%%%%% MIT %%%%%%%
+\subsection{MIT\_BIH}
+The model trained for 25 epochs (22sec/epochs) using early stopping, reduce LR on plateau and validation split 0.2.
+This model on the Mit\_Bih dataset achives an accuracy of 0.985.
+
+%%%%%%% PTB %%%%%%%
+\subsection{PTB}
+The model trained for 41 epochs (2sec/epochs) using early stopping, reduce LR on plateau and validation split 0.2.
+This model on the PTB dataset achives an accuracy of 0.986. The model achieved a AUROC score of 0.995 and a AUPRC score of 0.997.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RES NET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{CNN with Residual Blocks}
-The code for this model can be found at "/src/MIT/ResNet\_mit.ipynb".
 For this task, we designed a CNN architecture similar to ResNet (but shallower). This is the model that achieves the best performance. This model compared to the vanilla CNN adds residual blocks after each BatchNormalization layer.
 %%%%%%% MIT %%%%%%%
 \subsection{MIT\_BIH}
-This model on the Mit\_Bih dataset, achives an accuracy of 0.988. The training curves and confusion matrix are summarized in image \ref{fig:res_mit_three}.
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/res_net_mit_accuracy.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/res_net_mit_loss.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/res_net_mit_confusion.png}
-\caption{(left) train and validation loss of the CNN with residual blocks for the Mit\_bih dataset. \\ (center) train and validation accuracy of the CNN with residual blocks for the Mit\_bih dataset. \\(right) confusion matrix of the CNN with residual blocks for the Mit\_bih dataset}
-\label{fig:res_mit_three}
-\end{figure}
+The model trained for 27 epochs (15sec/epochs) using early stopping, reduce LR on plateau and validation split 0.1.
+This model on the Mit\_Bih dataset achives an accuracy of 0.988.
 
 %%%%%%% PTB %%%%%%%
 \subsection{PTB}
-The code for this model can be found at "/src/PTB/ResNet\_ptb.ipynb".
-This model on the PTB dataset, achives an accuracy of 0.986. The training AUROC, AUPRC curves and confusion matrix  are summarized in images \ref{fig:res_ptb_three} and \ref{fig:res_ptb_two}
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/res_net_ptb_accuracy.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/res_net_ptb_loss.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/res_net_ptb_confusion.png}
-\caption{(left) train and validation loss of the CNN with residual blocks for the PTB dataset. \\ (center) train and validation accuracy of the CNN with residual blocks for the PTB dataset. \\(right) confusion matrix of the CNN with residual blocks for the PTB dataset}
-\label{fig:res_ptb_three}
-\end{figure}
-
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/res_net_ptb_auprc.png}\hfill
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/res_net_ptb_auroc.png}\hfill
-\caption{(left) AURPC curve of the CNN with residual blocks for the PTB dataset. \\ (right) AUROC curve of the CNN with residual blocks for the PTB dataset}
-\label{fig:res_ptb_two}
-\end{figure}
-
-
-
+The model trained for 44 epochs (2sec/epochs) using early stopping, reduce LR on plateau and validation split 0.1.
+This model on the PTB dataset achives an accuracy of 0.986. The model achieved a AUROC score of 0.857 and a AUPRC score of 0.94
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRANSFORMER %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Transformer}
 This model consists of three transformers encoder blocks, stacked on top of each other with a standard CNN at the end. This model is very heavy to train. Without ColabPro the training for the Mit\_Bih dataset is around 16hours with the TPU.  Using ColabPro, the amount of time required to train the model decreases drastically. Overall, its performance is not great if compared to the other much lighter models, therefore we would not recommend using this model in these particular tasks. Moreover, this model is also significantly slower than all of the other models at prediction time.
 %%%%%%% MIT %%%%%%%
 \subsection{MIT\_BIH}
-The code for this model can be found at "/src/MIT/Transformer\_mit.ipynb".
-This model on the Mit\_Bih dataset, achives an accuracy of 0.976. The training curves and confusion matrix are summarized in image \ref{fig:transformer_mit_three}.
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/transformer_mit_accuracy.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/transformer_mit_loss.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/mit/transformer_mit_confusion.png}
-\caption{(left) train and validation loss of the transformer for the Mit\_bih dataset. \\ (center) train and validation accuracy of the transformer for the Mit\_bih dataset. \\(right) confusion matrix of the transformer for the Mit\_bih dataset}
-\label{fig:transformer_mit_three}
+The model trained for 104 epochs (25sec/epochs) using early stopping and validation split 0.2.
+This model on the Mit\_Bih dataset achives an accuracy of 0.976. 
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.30\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{../models_performance_graphs/mit/transformer_mit_accuracy.png}  
+		\caption{Train and validation loss of the transformer for the Mit\_bih dataset.}
+	\end{subfigure}
+	\begin{subfigure}{.30\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{../models_performance_graphs/mit/transformer_mit_loss.png}  
+		\caption{Train and validation accuracy of the transformer for the Mit\_bih dataset.}
+	\end{subfigure}
+	\begin{subfigure}{.30\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{../models_performance_graphs/mit/transformer_mit_confusion.png}  
+		\caption{Confusion matrix of the transformer for the Mit\_bih dataset.}
+	\end{subfigure}
+	\label{FIGURE LABEL 1}
+	\caption{}
 \end{figure}
 
 %%%%%%% PTB %%%%%%%
 \subsection{PTB}
-The code for this model can be found at "/src/PTB/Transformer\_ptb.ipynb".
-This model on the PTB dataset, achives an accuracy of 0.968. The training, AUROC, AUPRC curves and confusion matrix can  be found in images \ref{fig:tranformer_ptb_three} and \ref{fig:transformer_ptb_two}
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/transformer_ptb_accuracy.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/transformer_ptb_loss.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/transformer_ptb_confusion.png}
-\caption{(left) train and validation loss of the transformer for the PTB dataset. \\ (center) train and validation accuracy of the transformer for the PTB dataset. \\(right) confusion matrix of the transformer for the PTB dataset}
-\label{fig:tranformer_ptb_three}
+The model trained for 146 epochs (4sec/epochs) using early stopping and validation split 0.2.
+This model on the PTB dataset achives an accuracy of 0.968. The model achieved a AUROC score of 0.980 and a AUPRC score of 0.985.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Transfer Learning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Transfer Learning}
+For this task we used the DBLSTM-WS model trained on the MIT\_BIH dataset. We froze the Bidirectional LSTM layers and then trained the last two dense layers on the PTB dataset (adapting the last layer to fit the binary classification task), thus making these layers perform feature extraction. The model trained for 27 epochs (3sec/epoch) using early stopping, reduce LR on plateau and validation split 0.2.
+This model on the PTB dataset achives an accuracy of 0.992. The model achieved a AUROC score of 0.996 and a AUPRC score of 0.997. We also tried to freeze the first dense layer and only train the last dense obtaining an accuracy of 0.988.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.47\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{../models_performance_graphs/ptb/transf_ptb_accuracy.png}  
+		\caption{Train and validation loss of the transfer learning for the PTB dataset.}
+	\end{subfigure}
+	\begin{subfigure}{.47\textwidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{../models_performance_graphs/ptb/transf_ptb_loss.png}  
+		\caption{Train and validation accuracy of the transformer for the PTB dataset.}
+	\end{subfigure}
+	\label{FIGURE LABEL 2}
+	\caption{}
 \end{figure}
-
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/transformer_ptb_auprc.png}\hfill
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/ptb/transformer_ptb_auroc.png}\hfill
-\caption{(left) AURPC curve of the transformer for the PTB dataset. \\ (right) AUROC curve of the transformer for the PTB dataset}
-\label{fig:transformer_ptb_two}
-\end{figure}
-
-
-
-
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ENSEMBLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,69 +219,40 @@ The performance of each approach is summarized in their respective section.
 \subsection{Average of the outputs}
 %%%%%%% MIT %%%%%%%
 \subsubsection{MIT\_BIH}
-The code for this ensemble model can be found at "src/MIT/ensemble\_voting\_mit.ipynb".
-This ensemble reaches an accuracy of 0.984. The confusion matrix can be found at \ref{fig:confusion_voting_mit}.
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/mit/ensemble_voting_confusion_mit.png}
-\caption{Confusion matrix of the ensemble average of the outputs for the Mit\_Bih dataset}
-\label{fig:confusion_voting_mit}
-\end{figure}
+This ensemble reaches an accuracy of 0.984.
 
 %%%%%%% PTB %%%%%%%
 \subsubsection{PTB}
-The code for this ensemble model can be found at "src/PTB/ensemble\_voting\_ptb.ipynb".
-This ensemble reaches an accuracy of 0.990. The AUROC, AUPRC curves and confusion matrix can be found in image \ref{fig:ensemble_voting_ptb_three}
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_voting_AURPC_ptb.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_voting_AUROC_ptb.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_voting_confusion_ptb.png}
-\caption{(left) AURPC curve of the ensemble average of the outputs for the PTB dataset. \\ (center) AUROC curve of the ensemble average of the outputs for the PTB dataset \\ (right) confusion matrix of the ensemble average of the outputs for the PTB dataset}
-\label{fig:ensemble_voting_ptb_three}
-\end{figure}
+This ensemble reaches an accuracy of 0.990. The model achieved a AUROC score of 0.986 and a AUPRC score of 0.990.
 
 %%%%%%% ENSEMBLE TWO %%%%%%%
 \subsection{Logistic regression on the outputs}
 
-\subsubsection{MIT\_BIH}
-The code for this model can be found at "src/MIT/ensemble\_logistic\_regression\_mit.ipynb".
-This ensemble reaches an accuracy of 0.987. The confusion matrix can be found at \ref{fig:confusion_logistic_mit}.
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.50\textwidth]{../models_performance_graphs/mit/ensemble_logistic_confusion_mit.png}
-\caption{Confusion matrix of the ensemble logistic regression for the Mit\_Bih dataset}
-\label{fig:confusion_logistic_mit}
-\end{figure}
 %%%%%%% MIT %%%%%%%
 
+\subsubsection{MIT\_BIH}
+This ensemble reaches an accuracy of 0.987.
 
 %%%%%%% PTB %%%%%%%
 \subsubsection{PTB}
-The code for this ensemble model can be found at "src/PTB/ensemble\_logistic\_regression\_ptb.ipynb".
-This ensemble reaches an accuracy of 0.991. The AUROC, AUPRC curves and confusion matrix can be found in image \ref{fig:ensemble_logistic_ptb_three}
-\begin{figure}[htp]
-\centering
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_logistic_AURPC_ptb.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_logistic_AUROC_ptb.png}\hfill
-\includegraphics[width=.30\textwidth]{../models_performance_graphs/ptb/ensemble_logistic_confusion_ptb.png}
-\caption{(left) AURPC curve of the ensemble logistic regression for the PTB dataset. \\ (center) AUROC curve of the ensemble logistic regression for the PTB dataset \\ (right) confusion matrix of the ensemble logistic regression for the PTB dataset}
-\label{fig:ensemble_logistic_ptb_three}
-\end{figure}
+This ensemble reaches an accuracy of 0.991. The model achieved a AUROC score of 0.988 and a AUPRC score of 0.991.
 
 \newpage
 \section{Appendix}
 
 \begin{table}[ht]
 \centering
-\caption{Summary of results}
+\caption{Summary of results - Accuracy}
 \begin{tabular}[t]{lcc}
 \toprule
 &MIT\_BIH A&PTB\\
 \midrule
 Vanilla CNN &0.981&0.982\\
+Vanilla RNN & 0.888 & 0.795 \\
+DBLSTM-WS & 0.985 & 0.986 \\
 CNN Residual Blocks&0.988&0.986\\
 Transformer&0.976&0.968\\
+Transfer Learning & -- & 0.992 \\
 Ensemble Average&0.984&0.990\\
 Ensemble Logistic&0.987&0.991\\
 \bottomrule
