@@ -2,7 +2,7 @@
 
 ## Database
 
-The notebooks are supposed to work on the PTB and MIT_BIH databases.
+The notebooks are supposed to work on the PTB and MIT_BIH datasets.
 
 ## Setup
 
