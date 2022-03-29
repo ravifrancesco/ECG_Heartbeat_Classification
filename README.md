@@ -15,7 +15,7 @@ On Colab, it may be required to install the PyWavelets library using for running
 $ pip install PyWavelets
 ```
 
-###Train
+### Train
 In the first cells of each notebook you can find the following line:
 
 ```python
