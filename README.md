@@ -15,8 +15,28 @@ On Colab, it may be required to install the PyWavelets library using for running
 $ pip install PyWavelets
 ```
 
+###Train
+In the first cells of each notebook you can find the following line:
+
+```python
+train = False
+```
+
+This indiates that the model will be loaded from the specified .h5 file. and no training will be performed. To train the model simply changed the previous cell to:
+
+```python
+train = True
+```
+
 ### File paths
-In the notebooks some filepaths may be found (for the .h5 files for the models and the .csv files for the databases). They have to be changed to match the file paths of the environment where the models are run.
+In the first cells of each notebook you can find 2 (in the case of transfer learning 3) paths:
+
+```python
+data_path = "../input/"
+model_path = "../../H5/MIT/RNN_mit.h5"
+```
+
+The first path indicates the directory of the databases, the second path indicates the file of the model to save while training and/or load after training. This path must match you local directory.
 
 ## Contributors
 
