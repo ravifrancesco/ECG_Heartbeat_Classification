@@ -22,7 +22,7 @@ In the first cells of each notebook you can find the following line:
 train = False
 ```
 
-This indiates that the model will be loaded from the specified .h5 file. and no training will be performed. To train the model simply changed the previous cell to:
+This indiates that the model will be loaded from the specified .h5 file. and no training will be performed. To train the model simply change the previous cell to:
 
 ```python
 train = True
@@ -36,10 +36,10 @@ data_path = "../input/"
 model_path = "../../H5/<database name>/<model name>.h5"
 ```
 
-The first path indicates the directory of the databases, the second path indicates the file of the model to save while training and/or load after training. This path must match your local directory. For the ensemble models, the ```model_path``` variable should point to the folder which contains the .h5 files:
+The first path indicates the directory of the datasets, the second path indicates the file from which the model will be loaded (or saved if training is enabled). For the ensemble models, the ```model_path``` variable should point to the folder which contains the .h5 files:
 
 ```python
-model_path = "../../H5/<database name>/"
+model_path = "../../H5/<PTB || MIT>/"
 ```
 
 ## Contributors
