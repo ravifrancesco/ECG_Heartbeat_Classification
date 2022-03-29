@@ -36,7 +36,11 @@ data_path = "../input/"
 model_path = "../../H5/<database name>/<model name>.h5"
 ```
 
-The first path indicates the directory of the databases, the second path indicates the file of the model to save while training and/or load after training. This path must match your local directory.
+The first path indicates the directory of the databases, the second path indicates the file of the model to save while training and/or load after training. This path must match your local directory. For the ensemble models, the ```model_path``` variable should point to the folder which contains the .h5 files:
+
+```python
+model_path = "../../H5/<database name>/"
+```
 
 ## Contributors
 
