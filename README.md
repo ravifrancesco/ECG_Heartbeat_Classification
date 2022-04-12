@@ -2,7 +2,7 @@
 
 ## Database
 
-The notebooks are supposed to work on the PTB and MIT_BIH datasets.
+The notebooks are supposed to work on the [PTB](https://physionet.org/content/ptbdb/1.0.0/) and [MIT_BIH](https://physionet.org/content/mitdb/1.0.0/) datasets.
 
 ## Setup
 
